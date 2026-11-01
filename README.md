@@ -555,70 +555,7 @@ Expected:
 Your cart is empty.
 ```
 
-## 16. Design Limitations
-
-The current implementation is intentionally educational.
-
-- Data is not persisted between executions.
-- There is only one logged-in user.
-- Users cannot be added through the interactive menu.
-- Items cannot be listed through the interactive menu.
-- Selling an item does not return it to marketplace listings.
-- The cart can contain at most 100 distinct item records.
-- Owned inventory can contain at most 100 distinct item records.
-- Monetary values use `double`, which is suitable for demonstration but not ideal for production financial software.
-- User and item lookups use linear scans.
-- There is no authentication or authorization.
-- There is no real payment processing.
-- There is no concurrent-user support.
-
-## 17. Academic Evaluation Criteria
-
-A professor can evaluate the project using the following criteria.
-
-### Correctness
-
-- Does the program compile using the provided Makefile?
-- Are invalid inputs handled?
-- Are item quantities updated correctly?
-- Does checkout validate stock and wallet balance?
-- Does selling update inventory and wallet balance?
-
-### Data-structure usage
-
-- Are users stored as a linked list?
-- Are seller items stored as linked lists?
-- Are graph connections represented by adjacency lists?
-- Is breadth-first search used for recommendations?
-
-### Memory safety
-
-- Are successful allocations eventually freed?
-- Are allocation failures handled?
-- Is double freeing avoided?
-- Does graph cleanup release the complete data structure?
-
-### Modularity
-
-- Are public functions declared in the public header?
-- Are internal helpers separated from the public API?
-- Are responsibilities divided among source files?
-
-### Input validation
-
-- Are malformed integers rejected?
-- Are negative monetary amounts rejected?
-- Are zero quantities rejected?
-- Are nonexistent users and items handled safely?
-
-### Maintainability
-
-- Are compiler warnings enabled?
-- Are names descriptive?
-- Are functions separated by responsibility?
-- Is formatting consistent?
-
-## 18. Optional Compilation Without Make
+## 16. Optional Compilation Without Make
 
 The equivalent direct compilation command is:
 
@@ -638,7 +575,7 @@ Run the executable:
 ./marketplace
 ```
 
-## 19. Summary
+## 17. Summary
 
 This project is an educational connection-based marketplace implemented in C.
 
