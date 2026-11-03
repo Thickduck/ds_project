@@ -9,24 +9,27 @@
 #define MAX_CART_ITEMS 100
 #define MAX_INVENTORY_ITEMS 100
 
-typedef struct {
+typedef struct
+{
     const Item *items[MAX_CART_ITEMS];
     size_t quantities[MAX_CART_ITEMS];
     size_t count;
 } Cart;
 
-typedef struct {
+typedef struct
+{
     Item items[MAX_INVENTORY_ITEMS];
     size_t count;
 } Inventory;
 
-static const User *find_seller(const MarketplaceGraph *marketplace,
-                               int seller_id)
+static const User *find_seller(const MarketplaceGraph *marketplace, int seller_id)
 {
     const User *user;
 
-    for (user = marketplace->users; user != NULL; user = user->next) {
-        if (user->id == seller_id) {
+    for (user = marketplace->users; user != NULL; user = user->next)
+    {
+        if (user->id == seller_id)
+        {
             return user;
         }
     }
@@ -55,7 +58,8 @@ static bool read_line(const char *prompt, char *buffer, size_t buffer_size)
     printf("%s", prompt);
     fflush(stdout);
 
-    if (fgets(buffer, (int)buffer_size, stdin) == NULL) {
+    if (fgets(buffer, (int)buffer_size, stdin) == NULL)
+    {
         return false;
     }
 
@@ -68,8 +72,10 @@ static bool read_int(const char *prompt, int *value)
     char input[64];
     char extra;
 
-    while (read_line(prompt, input, sizeof(input))) {
-        if (sscanf(input, " %d %c", value, &extra) == 1) {
+    while (read_line(prompt, input, sizeof(input)))
+    {
+        if (sscanf(input, " %d %c", value, &extra) == 1)
+        {
             return true;
         }
         printf("Please enter a valid whole number.\n");
@@ -82,8 +88,10 @@ static bool read_quantity(const char *prompt, size_t *quantity)
 {
     int value;
 
-    while (read_int(prompt, &value)) {
-        if (value > 0) {
+    while (read_int(prompt, &value))
+    {
+        if (value > 0)
+        {
             *quantity = (size_t)value;
             return true;
         }
@@ -99,14 +107,17 @@ static bool read_money(const char *prompt, double *value)
     char extra;
     char *end;
 
-    while (read_line(prompt, input, sizeof(input))) {
+    while (read_line(prompt, input, sizeof(input)))
+    {
         errno = 0;
         *value = strtod(input, &end);
-        while (*end == ' ' || *end == '\t') {
+        while (*end == ' ' || *end == '\t')
+        {
             end++;
         }
         extra = *end;
-        if (end != input && extra == '\0' && errno == 0 && *value >= 0.0) {
+        if (end != input && extra == '\0' && errno == 0 && *value >= 0.0)
+        {
             return true;
         }
         printf("Please enter a valid non-negative amount.\n");
@@ -120,9 +131,12 @@ static const Item *find_item(const MarketplaceGraph *marketplace, int item_id)
     const User *user;
     const Item *item;
 
-    for (user = marketplace->users; user != NULL; user = user->next) {
-        for (item = user->items_for_sale; item != NULL; item = item->next) {
-            if (item->id == item_id) {
+    for (user = marketplace->users; user != NULL; user = user->next)
+    {
+        for (item = user->items_for_sale; item != NULL; item = item->next)
+        {
+            if (item->id == item_id)
+            {
                 return item;
             }
         }
@@ -135,8 +149,10 @@ static bool cart_contains(const Cart *cart, const Item *item)
 {
     size_t index;
 
-    for (index = 0; index < cart->count; index++) {
-        if (cart->items[index] == item) {
+    for (index = 0; index < cart->count; index++)
+    {
+        if (cart->items[index] == item)
+        {
             return true;
         }
     }
@@ -150,12 +166,14 @@ static void show_cart(const MarketplaceGraph *marketplace, const Cart *cart)
     double total = 0.0;
 
     print_section("Shopping cart");
-    if (cart->count == 0) {
+    if (cart->count == 0)
+    {
         printf("Your cart is empty.\n");
         return;
     }
 
-    for (index = 0; index < cart->count; index++) {
+    for (index = 0; index < cart->count; index++)
+    {
         print_item(cart->items[index], (void *)marketplace);
         printf("    quantity: %zu | line total: ₹%.2f\n",
                cart->quantities[index],
@@ -171,12 +189,14 @@ static void show_inventory(const MarketplaceGraph *marketplace,
     size_t index;
 
     print_section("Owned inventory");
-    if (inventory->count == 0) {
+    if (inventory->count == 0)
+    {
         printf("You do not own any items yet.\n");
         return;
     }
 
-    for (index = 0; index < inventory->count; index++) {
+    for (index = 0; index < inventory->count; index++)
+    {
         print_item(&inventory->items[index], (void *)marketplace);
     }
 }
@@ -186,7 +206,8 @@ static void browse_items(const MarketplaceGraph *marketplace, int user_id)
     int hops;
 
     if (!read_int("How many connection hops should be searched? ", &hops) ||
-        hops < 1) {
+        hops < 1)
+    {
         printf("Please choose at least one hop.\n");
         return;
     }
@@ -194,7 +215,8 @@ static void browse_items(const MarketplaceGraph *marketplace, int user_id)
     print_section("Items available through your connections");
     if (!marketplace_query_connected_items(marketplace, user_id,
                                            (size_t)hops, print_item,
-                                           (void *)marketplace)) {
+                                           (void *)marketplace))
+    {
         printf("Could not search recommendations.\n");
     }
 }
@@ -205,26 +227,39 @@ static void add_to_cart(const MarketplaceGraph *marketplace, Cart *cart)
     size_t quantity;
     const Item *item;
 
-    if (cart->count == MAX_CART_ITEMS) {
+    if (cart->count == MAX_CART_ITEMS)
+    {
         printf("Your cart is full.\n");
         return;
     }
-    if (!read_int("Enter the item ID to add: ", &item_id)) {
+    if (!read_int("Enter the item ID to add: ", &item_id))
+    {
         return;
     }
 
     item = find_item(marketplace, item_id);
-    if (item == NULL) {
+    if (item == NULL)
+    {
         printf("No item with ID %d was found.\n", item_id);
-    } else if (cart_contains(cart, item)) {
+    }
+    else if (cart_contains(cart, item))
+    {
         printf("That item is already in your cart.\n");
-    } else if (item->quantity == 0) {
+    }
+    else if (item->quantity == 0)
+    {
         printf("That item is currently out of stock.\n");
-    } else if (!read_quantity("How many would you like? ", &quantity)) {
+    }
+    else if (!read_quantity("How many would you like? ", &quantity))
+    {
         return;
-    } else if (quantity > item->quantity) {
+    }
+    else if (quantity > item->quantity)
+    {
         printf("Only %zu units are available.\n", item->quantity);
-    } else {
+    }
+    else
+    {
         cart->items[cart->count] = item;
         cart->quantities[cart->count] = quantity;
         cart->count++;
@@ -238,14 +273,17 @@ static bool inventory_add(Inventory *inventory, const Item *item,
 {
     size_t index;
 
-    for (index = 0; index < inventory->count; index++) {
-        if (inventory->items[index].id == item->id) {
+    for (index = 0; index < inventory->count; index++)
+    {
+        if (inventory->items[index].id == item->id)
+        {
             inventory->items[index].quantity += quantity;
             return true;
         }
     }
 
-    if (inventory->count == MAX_INVENTORY_ITEMS) {
+    if (inventory->count == MAX_INVENTORY_ITEMS)
+    {
         return false;
     }
 
@@ -262,34 +300,42 @@ static void checkout(MarketplaceGraph *marketplace, Cart *cart,
     size_t index;
     double total = 0.0;
 
-    if (cart->count == 0) {
+    if (cart->count == 0)
+    {
         printf("Your cart is empty.\n");
         return;
     }
-    for (index = 0; index < cart->count; index++) {
-        if (cart->quantities[index] > cart->items[index]->quantity) {
+    for (index = 0; index < cart->count; index++)
+    {
+        if (cart->quantities[index] > cart->items[index]->quantity)
+        {
             printf("\"%s\" no longer has enough stock.\n",
                    cart->items[index]->name);
             return;
         }
         total += cart->quantities[index] * cart->items[index]->price;
     }
-    if (total > *balance) {
+    if (total > *balance)
+    {
         printf("Insufficient funds. Cart total is ₹%.2f, balance is ₹%.2f.\n",
                total, *balance);
         return;
     }
 
-    for (index = 0; index < cart->count; index++) {
+    for (index = 0; index < cart->count; index++)
+    {
         if (!inventory_add(inventory, cart->items[index],
-                           cart->quantities[index])) {
+                           cart->quantities[index]))
+        {
             printf("Your inventory cannot hold this purchase.\n");
             return;
         }
     }
-    for (index = 0; index < cart->count; index++) {
+    for (index = 0; index < cart->count; index++)
+    {
         if (!marketplace_purchase_item(marketplace, cart->items[index]->id,
-                                       cart->quantities[index])) {
+                                       cart->quantities[index]))
+        {
             printf("The purchase could not be completed because stock changed.\n");
             return;
         }
@@ -306,27 +352,34 @@ static void sell_item(Inventory *inventory, double *balance)
     size_t quantity;
     double sale_price;
 
-    if (inventory->count == 0) {
+    if (inventory->count == 0)
+    {
         printf("You do not own any items to sell.\n");
         return;
     }
-    if (!read_int("Enter the item ID to sell: ", &item_id)) {
+    if (!read_int("Enter the item ID to sell: ", &item_id))
+    {
         return;
     }
 
-    for (index = 0; index < inventory->count; index++) {
-        if (inventory->items[index].id == item_id) {
+    for (index = 0; index < inventory->count; index++)
+    {
+        if (inventory->items[index].id == item_id)
+        {
             break;
         }
     }
-    if (index == inventory->count) {
+    if (index == inventory->count)
+    {
         printf("You do not own an item with ID %d.\n", item_id);
         return;
     }
-    if (!read_quantity("How many would you like to sell? ", &quantity)) {
+    if (!read_quantity("How many would you like to sell? ", &quantity))
+    {
         return;
     }
-    if (quantity > inventory->items[index].quantity) {
+    if (quantity > inventory->items[index].quantity)
+    {
         printf("You only own %zu unit(s) of that item.\n",
                inventory->items[index].quantity);
         return;
@@ -338,7 +391,8 @@ static void sell_item(Inventory *inventory, double *balance)
     printf("Sold %zu unit(s) for ₹%.2f (70%% of the original price).\n",
            quantity, sale_price);
 
-    if (inventory->items[index].quantity == 0) {
+    if (inventory->items[index].quantity == 0)
+    {
         inventory->items[index] = inventory->items[inventory->count - 1];
         inventory->count--;
     }
@@ -394,25 +448,30 @@ int application_run(void)
         !marketplace_add_item_quantity(&marketplace, 107, 1,
                                        "Arduino Starter Kit", 2200.00, 3) ||
         !marketplace_add_item_quantity(&marketplace, 108, 3,
-                                       "Desk Organizer", 400.00, 5)) {
+                                       "Desk Organizer", 400.00, 5))
+    {
         fprintf(stderr, "Failed to initialize the marketplace.\n");
         marketplace_graph_destroy(&marketplace);
         return EXIT_FAILURE;
     }
 
     printf("Welcome! You are logged in as You (Junior).\n");
-    if (!read_money("Enter your starting wallet balance: ", &balance)) {
+    if (!read_money("Enter your starting wallet balance: ", &balance))
+    {
         marketplace_graph_destroy(&marketplace);
         return EXIT_SUCCESS;
     }
 
-    while (true) {
+    while (true)
+    {
         print_menu(balance);
-        if (!read_int("Choose an option: ", &choice)) {
+        if (!read_int("Choose an option: ", &choice))
+        {
             break;
         }
 
-        switch (choice) {
+        switch (choice)
+        {
         case 1:
             browse_items(&marketplace, current_user_id);
             break;
@@ -423,7 +482,8 @@ int application_run(void)
             show_cart(&marketplace, &cart);
             break;
         case 4:
-            if (read_money("Amount to add: ", &amount)) {
+            if (read_money("Amount to add: ", &amount))
+            {
                 balance += amount;
                 printf("Wallet balance is now ₹%.2f.\n", balance);
             }

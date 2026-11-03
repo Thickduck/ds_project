@@ -22,7 +22,8 @@ typedef void (*ItemCallback)(const Item *item, void *context);
  * An item listed for sale by a user. Quantity is the number of units currently
  * available in the marketplace listing.
  */
-struct Item {
+struct Item
+{
     int id;
     char name[MARKETPLACE_NAME_MAX];
     double price;
@@ -34,7 +35,8 @@ struct Item {
 /*
  * An adjacency-list entry representing a connection to another user.
  */
-struct Connection {
+struct Connection
+{
     User *user;
     Connection *next;
 };
@@ -42,7 +44,8 @@ struct Connection {
 /*
  * A marketplace user and the user's items and graph connections.
  */
-struct User {
+struct User
+{
     int id;
     char name[MARKETPLACE_NAME_MAX];
     Item *items_for_sale;
@@ -56,7 +59,8 @@ struct User {
  * Users are graph vertices, and each user's connections form that vertex's
  * adjacency list. Connections are maintained bidirectionally.
  */
-struct MarketplaceGraph {
+struct MarketplaceGraph
+{
     User *users;
     size_t user_count;
 };

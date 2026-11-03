@@ -24,17 +24,20 @@ bool marketplace_add_item_quantity(MarketplaceGraph *graph,
     Item *item;
 
     if (graph == NULL || item_name == NULL || quantity == 0 ||
-        marketplace_item_id_exists(graph, item_id)) {
+        marketplace_item_id_exists(graph, item_id))
+    {
         return false;
     }
 
     seller = marketplace_find_user_mutable(graph, seller_id);
-    if (seller == NULL) {
+    if (seller == NULL)
+    {
         return false;
     }
 
     item = malloc(sizeof(*item));
-    if (item == NULL) {
+    if (item == NULL)
+    {
         return false;
     }
 
@@ -55,14 +58,19 @@ bool marketplace_purchase_item(MarketplaceGraph *graph,
     User *user;
     Item *item;
 
-    if (graph == NULL || quantity == 0) {
+    if (graph == NULL || quantity == 0)
+    {
         return false;
     }
 
-    for (user = graph->users; user != NULL; user = user->next) {
-        for (item = user->items_for_sale; item != NULL; item = item->next) {
-            if (item->id == item_id) {
-                if (item->quantity < quantity) {
+    for (user = graph->users; user != NULL; user = user->next)
+    {
+        for (item = user->items_for_sale; item != NULL; item = item->next)
+        {
+            if (item->id == item_id)
+            {
+                if (item->quantity < quantity)
+                {
                     return false;
                 }
                 item->quantity -= quantity;
@@ -81,16 +89,19 @@ bool marketplace_list_items(const MarketplaceGraph *graph,
     const User *seller;
     const Item *item;
 
-    if (graph == NULL || callback == NULL) {
+    if (graph == NULL || callback == NULL)
+    {
         return false;
     }
 
     seller = marketplace_find_user_const(graph, seller_id);
-    if (seller == NULL) {
+    if (seller == NULL)
+    {
         return false;
     }
 
-    for (item = seller->items_for_sale; item != NULL; item = item->next) {
+    for (item = seller->items_for_sale; item != NULL; item = item->next)
+    {
         callback(item, context);
     }
     return true;

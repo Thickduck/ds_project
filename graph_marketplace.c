@@ -7,11 +7,14 @@ User *marketplace_find_user_mutable(MarketplaceGraph *graph, int user_id)
 {
     User *user;
 
-    if (graph == NULL) {
+    if (graph == NULL)
+    {
         return NULL;
     }
-    for (user = graph->users; user != NULL; user = user->next) {
-        if (user->id == user_id) {
+    for (user = graph->users; user != NULL; user = user->next)
+    {
+        if (user->id == user_id)
+        {
             return user;
         }
     }
@@ -23,11 +26,14 @@ const User *marketplace_find_user_const(const MarketplaceGraph *graph,
 {
     const User *user;
 
-    if (graph == NULL) {
+    if (graph == NULL)
+    {
         return NULL;
     }
-    for (user = graph->users; user != NULL; user = user->next) {
-        if (user->id == user_id) {
+    for (user = graph->users; user != NULL; user = user->next)
+    {
+        if (user->id == user_id)
+        {
             return user;
         }
     }
@@ -39,8 +45,10 @@ bool marketplace_connection_exists(const User *user, const User *target)
     const Connection *connection;
 
     for (connection = user->connections; connection != NULL;
-         connection = connection->next) {
-        if (connection->user == target) {
+         connection = connection->next)
+    {
+        if (connection->user == target)
+        {
             return true;
         }
     }
@@ -52,9 +60,12 @@ bool marketplace_item_id_exists(const MarketplaceGraph *graph, int item_id)
     const User *user;
     const Item *item;
 
-    for (user = graph->users; user != NULL; user = user->next) {
-        for (item = user->items_for_sale; item != NULL; item = item->next) {
-            if (item->id == item_id) {
+    for (user = graph->users; user != NULL; user = user->next)
+    {
+        for (item = user->items_for_sale; item != NULL; item = item->next)
+        {
+            if (item->id == item_id)
+            {
                 return true;
             }
         }
@@ -64,7 +75,8 @@ bool marketplace_item_id_exists(const MarketplaceGraph *graph, int item_id)
 
 void marketplace_free_items(Item *items)
 {
-    while (items != NULL) {
+    while (items != NULL)
+    {
         Item *next = items->next;
         free(items);
         items = next;
@@ -73,7 +85,8 @@ void marketplace_free_items(Item *items)
 
 void marketplace_free_connections(Connection *connections)
 {
-    while (connections != NULL) {
+    while (connections != NULL)
+    {
         Connection *next = connections->next;
         free(connections);
         connections = next;
@@ -82,7 +95,8 @@ void marketplace_free_connections(Connection *connections)
 
 void marketplace_graph_init(MarketplaceGraph *graph)
 {
-    if (graph != NULL) {
+    if (graph != NULL)
+    {
         graph->users = NULL;
         graph->user_count = 0;
     }
@@ -92,11 +106,13 @@ void marketplace_graph_destroy(MarketplaceGraph *graph)
 {
     User *user;
 
-    if (graph == NULL) {
+    if (graph == NULL)
+    {
         return;
     }
     user = graph->users;
-    while (user != NULL) {
+    while (user != NULL)
+    {
         User *next = user->next;
         marketplace_free_items(user->items_for_sale);
         marketplace_free_connections(user->connections);
@@ -113,11 +129,13 @@ bool marketplace_add_user(MarketplaceGraph *graph, int user_id,
     User *user;
 
     if (graph == NULL || name == NULL ||
-        marketplace_find_user_mutable(graph, user_id) != NULL) {
+        marketplace_find_user_mutable(graph, user_id) != NULL)
+    {
         return false;
     }
     user = malloc(sizeof(*user));
-    if (user == NULL) {
+    if (user == NULL)
+    {
         return false;
     }
     user->id = user_id;
@@ -143,19 +161,22 @@ bool marketplace_add_connection(MarketplaceGraph *graph, int first_user_id,
     Connection *first_connection;
     Connection *second_connection;
 
-    if (graph == NULL || first_user_id == second_user_id) {
+    if (graph == NULL || first_user_id == second_user_id)
+    {
         return false;
     }
     first = marketplace_find_user_mutable(graph, first_user_id);
     second = marketplace_find_user_mutable(graph, second_user_id);
     if (first == NULL || second == NULL ||
-        marketplace_connection_exists(first, second)) {
+        marketplace_connection_exists(first, second))
+    {
         return false;
     }
 
     first_connection = malloc(sizeof(*first_connection));
     second_connection = malloc(sizeof(*second_connection));
-    if (first_connection == NULL || second_connection == NULL) {
+    if (first_connection == NULL || second_connection == NULL)
+    {
         free(first_connection);
         free(second_connection);
         return false;
